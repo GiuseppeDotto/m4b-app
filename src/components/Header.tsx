@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
 import "./Header.css";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserDialog from "./UserDialog";
+import { UserContext } from "../App";
 
 export default function Header() {
-  const [userName, _setUserName] = useState("Login");
+  const user = useContext(UserContext);
+  const [userName, setUserName] = useState(user?.displayName);
+  const [dialogOpened, setDialogOpened] = useState(false);
+
+  useEffect(() => {
+    setUserName(user?.displayName);
+  }, [user]);
 
   return (
     <div className="main-header-container">
@@ -12,7 +20,10 @@ export default function Header() {
         <Link to="/blog">blog</Link>
         <Link to="/pyM4B">pyM4B</Link>
       </nav>
-      <button className="btn-login btn-primary">{userName}</button>
+      <button className="btn-login btn-secondary" onClick={() => setDialogOpened(true)}>
+        {userName || "Login"}
+      </button>
+      <UserDialog opened={dialogOpened} onCLose={() => setDialogOpened(false)} />
     </div>
   );
 }

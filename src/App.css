@@ -1,0 +1,66 @@
+dialog {
+  border: none;
+  max-width: calc(100% - 2em - 20px);
+  max-height: calc(100% - 2em - 20px);
+}
+
+.dialog-div-alert {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: darkorange;
+  text-align: center;
+  transition: height 250ms ease-in-out;
+}
+
+button {
+  background-color: white;
+  outline: 1px solid #333;
+  color: #333;
+
+  border: none;
+  cursor: pointer;
+  transition: translate 250ms ease-in-out, background-color 250ms ease-in-out;
+}
+button:hover {
+  translate: 0px -2px;
+  background-color: hsl(0, 0%, 95%);
+}
+
+button.btn-primary {
+  background-color: #333;
+  color: white;
+}
+button.btn-primary:hover {
+  background-color: hsl(0, 0%, 40%);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+form > label {
+  margin-top: 20px;
+}
+form > hr {
+  width: 100%;
+  margin: 20px 0;
+}
+form > div.form-buttons {
+  display: flex;
+  gap: 10px;
+  button {
+    flex: 1;
+  }
+}
+
+/* GENERAL USE */
+.abs-topright {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
