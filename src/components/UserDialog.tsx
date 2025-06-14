@@ -11,6 +11,7 @@ import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { auth } from "../config/firebase";
 import { UserContext } from "../App";
 import { FirebaseError } from "firebase/app";
+import ObjectToTable from "./ObjectToTable";
 
 interface Props {
   opened: boolean;
@@ -99,10 +100,17 @@ export default function UserDialog({ opened, onCLose }: Props) {
   };
 
   const UserSpace = () => {
+    if (!user) return;
+
     return (
       <div className="user-space">
-        <h3>{user?.displayName}</h3>
-        <p>User since {user?.metadata.creationTime?.split(" ").slice(0, 3).join(" ")}</p>
+        <h3>{user.displayName}</h3>
+        <ObjectToTable
+          obj={{
+            email: user.email,
+            userSince: new Date(user.metadata.creationTime ?? "").toLocaleDateString(),
+          }}
+        />
         <hr />
         <button style={{ width: "100%" }} onClick={() => signOut(auth)}>
           SING-OUT
