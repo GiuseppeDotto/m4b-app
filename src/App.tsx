@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "./config/firebase";
+import Blog from "./components/Blog";
 
 export const UserContext = createContext<User | null>(null);
 
@@ -17,13 +18,17 @@ function App() {
     });
     return () => unsubscribe();
   }, []);
+
   return (
     <>
       <UserContext.Provider value={user}>
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-        </Routes>
+        <main style={{ width: "min(1000px, 90%)", margin: "0 auto" }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/blog" element={<Blog />} />
+          </Routes>
+        </main>
       </UserContext.Provider>
     </>
   );
