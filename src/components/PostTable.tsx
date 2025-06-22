@@ -16,6 +16,7 @@ export default function PostTable() {
             {header.map((h) => (
               <th key={h}>{h}</th>
             ))}
+            <th>operations</th>
           </tr>
         </thead>
         <tbody>
@@ -27,10 +28,8 @@ export default function PostTable() {
                   value = value instanceof Date ? value.toLocaleDateString() : String(value);
                   return <td key={value + i}>{value}</td>;
                 })}
-                <td>
+                <td style={{ display: "flex", gap: "5px" }}>
                   <button>EDIT</button>
-                </td>
-                <td>
                   <button onClick={() => deleteDoc(doc(db, "posts", post.slug))}>DELETE</button>
                 </td>
               </tr>
