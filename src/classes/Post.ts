@@ -1,38 +1,49 @@
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, setDoc, Timestamp } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { Comment, IComment } from "./Comment";
 
-interface IPost {
+export interface IPost {
   title: string;
   content: string;
   tags: string[];
   createdAt?: Date;
+  slug?: string;
+  votes?: number;
+  views?: number;
+  comments?: Comment[];
 }
 
 export class Post implements IPost {
   title: string;
   content: string;
   tags: string[];
-  createdAt?: Date;
 
-  // class specific
+  createdAt: Date;
   slug: string;
-  votes: number = 0;
-  views: number = 0;
-  comments: Comment[] = [];
+  votes: number;
+  views: number;
+  comments: Comment[];
 
   constructor(data: IPost) {
     this.title = data.title;
     this.content = data.content;
     this.tags = data.tags;
-    this.createdAt = data.createdAt || new Date();
+    if (data.createdAt instanceof Timestamp) {
+      this.createdAt = data.createdAt.toDate();
+    } else if (data.createdAt instanceof Date) {
+      this.createdAt = data.createdAt;
+    } else {
+      this.createdAt = new Date();
+    }
 
     this.slug = data.title.trim().toLowerCase().replace(/\W/g, "-");
-    this.votes = 0;
-    this.views = 0;
-    this.comments = [];
+    this.votes = data.votes || 0;
+    this.views = data.views || 0;
+    this.comments = data.comments || [];
+  }
 
-    setDoc(doc(db, "posts", this.slug), { ...this });
+  async addToDB() {
+    await setDoc(doc(db, "posts", this.slug), { ...this });
   }
 
   async addComment(commentData: IComment) {

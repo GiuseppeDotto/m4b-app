@@ -4,13 +4,30 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth } from "./config/firebase";
+import { auth, db } from "./config/firebase";
 import Blog from "./components/Blog";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { IPost, Post } from "./classes/Post";
 
 export const UserContext = createContext<User | null>(null);
+export const PostsContext = createContext<Post[]>([]);
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [postList, setPostList] = useState<Post[]>([]);
+
+  useEffect(() => {
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      let updateList: Post[] = [];
+      snapshot.forEach((post) => {
+        const tempPost = new Post(post.data() as IPost);
+        updateList.push(tempPost);
+      });
+      setPostList(updateList);
+    });
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
@@ -22,13 +39,15 @@ function App() {
   return (
     <>
       <UserContext.Provider value={user}>
-        <Header />
-        <main style={{ width: "min(1000px, 90%)", margin: "0 auto" }}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/blog" element={<Blog />} />
-          </Routes>
-        </main>
+        <PostsContext.Provider value={postList}>
+          <Header />
+          <main style={{ width: "min(1000px, 90%)", margin: "0 auto" }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/blog" element={<Blog />} />
+            </Routes>
+          </main>
+        </PostsContext.Provider>
       </UserContext.Provider>
     </>
   );

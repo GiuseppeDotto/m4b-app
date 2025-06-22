@@ -53,11 +53,16 @@ Curiosity killed the cat, satisfaction brought it back.`);
     setTags(content?.split(",").map((tag) => tag.trim().toLowerCase()) || []);
   };
 
-  const createPost = async () => new Post({ title, content, tags });
+  const createPost = async () => {
+    const post = new Post({ title, content, tags });
+    await post.addToDB();
+    resetAndClose();
+  };
 
   const resetAndClose = () => {
     setTitle("");
     setContent("");
+    dialogRef.current?.close();
   };
 
   return (
