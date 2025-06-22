@@ -104,7 +104,13 @@ export default function UserDialog({ opened, onCLose }: Props) {
         <h3>{user?.displayName}</h3>
         <p>User since {user?.metadata.creationTime?.split(" ").slice(0, 3).join(" ")}</p>
         <hr />
-        <button style={{ width: "100%" }} onClick={() => signOut(auth)}>
+        <button
+          style={{ width: "100%" }}
+          onClick={async () => {
+            await signOut(auth);
+            location.reload();
+          }}
+        >
           SING-OUT
         </button>
       </div>
