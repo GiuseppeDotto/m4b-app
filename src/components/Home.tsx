@@ -1,11 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import ObjectToTable from "./ObjectToTable";
 import { PostsContext } from "../App";
 
 export default function Home() {
   const postList = useContext(PostsContext);
-
-  console.log(postList);
 
   return (
     <>
