@@ -3,6 +3,9 @@ import { MDXProvider } from "@mdx-js/react";
 import { Component, ComponentType, ErrorInfo, useEffect, useState } from "react";
 import * as runtime from "react/jsx-runtime";
 import remarkGfm from "remark-gfm";
+import "./MDXRenderer.css";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github-dark.min.css";
 
 // Error Boundary to catch rendering errors
 class MDXErrorBoundary extends Component<
@@ -43,6 +46,7 @@ export default function MDXRenderer({ content }: { content: string }) {
         const { default: MDXContent } = await evaluate(content, {
           ...runtime,
           remarkPlugins: [remarkGfm],
+          rehypePlugins: [rehypeHighlight],
         });
         setMDXComponent(() => MDXContent);
       } catch (err) {
