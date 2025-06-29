@@ -15,7 +15,6 @@ export default function NewPostDialog() {
     const selection = window.getSelection();
     if (!selection) return;
     const range = selection.getRangeAt(0);
-    console.log(selection, selection.toString());
 
     if (!selection.toString()) return;
 

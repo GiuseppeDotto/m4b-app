@@ -33,11 +33,12 @@ const MultipleObjectsTable = ({ obj }: { obj: { [key: string]: any }[] }) => {
       </thead>
       <tbody>
         {obj.map((o, i) => {
-          // const uniqueCode = String(new Date())
           return (
             <tr key={new Date().getTime() + i}>
               {allKeys.map((k) => {
-                return <td>{o[k]}</td>;
+                const value = o[k] instanceof Date ? o[k].toLocaleDateString() : String(o[k]);
+
+                return <td key={k + String(o[k])}>{value}</td>;
               })}
             </tr>
           );

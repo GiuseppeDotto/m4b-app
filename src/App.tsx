@@ -30,7 +30,6 @@ function App() {
 
         snapshot.docChanges().map((change) => {
           const postData = change.doc.data() as Post;
-          console.log(change, postData);
 
           if (change.type === "added") {
             tempPostList = [...tempPostList, new Post(postData)];
