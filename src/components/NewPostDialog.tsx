@@ -1,6 +1,7 @@
 import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent } from "react";
 import "./NewPostDialog.css";
 import { Post } from "../classes/Post";
+import MDXRenderer from "./MDXRenderer";
 
 export default function NewPostDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -136,7 +137,9 @@ export default function NewPostDialog() {
             // onBlur={(e) => setContent(e.target.innerText || "")}
             onInput={(e) => setContent((e.target as HTMLPreElement).innerText || "")}
           />
-          <div className="new-post-section">{content}</div>
+          <div className="new-post-section">
+            <MDXRenderer content={content} />
+          </div>
         </div>
         <div className="button-control">
           <button className="btn-primary" onClick={createPost}>
