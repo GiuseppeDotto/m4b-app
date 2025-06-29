@@ -4,30 +4,17 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth, db } from "./config/firebase";
+import { auth } from "./config/firebase";
 import Blog from "./components/Blog";
-import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { IPost, Post } from "./classes/Post";
+import { Post } from "./classes/Post";
+import { samplePostList } from "./classes/samplePosts";
 
 export const UserContext = createContext<User | null>(null);
 export const PostsContext = createContext<Post[]>([]);
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [postList, setPostList] = useState<Post[]>([]);
-
-  useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let updateList: Post[] = [];
-      snapshot.forEach((post) => {
-        const tempPost = new Post(post.data() as IPost);
-        updateList.push(tempPost);
-      });
-      setPostList(updateList);
-    });
-    return () => unsubscribe();
-  }, []);
+  const [postList, _setPostList] = useState<Post[]>(samplePostList);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {

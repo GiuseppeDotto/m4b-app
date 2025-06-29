@@ -18,10 +18,10 @@ export default function Blog() {
       </p>
       <BlogSearchBar tagList={tagList} displayModes={["grid", "table"]} />
       {user?.uid == import.meta.env.VITE_ADMIN_UID ? (
-        <center style={{ margin: "20px" }}>
+        <>
           <NewPostDialog />
           <PostTable />
-        </center>
+        </>
       ) : null}
 
       <ul>

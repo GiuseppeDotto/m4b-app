@@ -1,11 +1,12 @@
-import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent } from "react";
+import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent, createContext } from "react";
 import "./NewPostDialog.css";
 import { Post } from "../classes/Post";
 
 export default function NewPostDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
-  const [title, setTitle] = useState("");
+  const defaultTitle = "Post Title";
+  const [title, setTitle] = useState(defaultTitle);
   const [content, setContent] =
     useState<string>(`Lorem ipsum dolor sit amet consectetur adipisicing elit.
 ## the issue
@@ -13,6 +14,25 @@ export default function NewPostDialog() {
 ## Curiosity
 Curiosity killed the cat, satisfaction brought it back.`);
   const [tags, setTags] = useState<string[]>([]);
+
+  const wrapSelection = (wrapper: string) => {
+    const selection = window.getSelection();
+    if (!selection) return;
+    const range = selection.getRangeAt(0);
+    console.log(range, range.toString(), selection.toString());
+
+    const newText = `${wrapper}${selection.toString().trim()}${wrapper}`;
+    const newTextNode = document.createTextNode(newText);
+    range.deleteContents();
+    range.insertNode(newTextNode);
+
+    // move cursor at the end of inserted text
+    selection.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.setStartAfter(newTextNode);
+    newRange.collapse(true);
+    selection.addRange(newRange);
+  };
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
@@ -32,16 +52,18 @@ Curiosity killed the cat, satisfaction brought it back.`);
       range.setEndAfter(lineBreak);
       selection.removeAllRanges();
       selection.addRange(range);
+    } else if (e.key === "b" && e.ctrlKey) {
+      e.preventDefault();
+      wrapSelection("**");
+    } else if (e.key === "i" && e.ctrlKey) {
+      e.preventDefault();
+      wrapSelection("_");
     }
   };
 
   const handlePaste = (e: ClipboardEvent) => {
     e.preventDefault();
-
     const text = e.clipboardData.getData("text/plain");
-
-    console.log(getSelection(), getSelection()?.rangeCount, getSelection()?.getRangeAt(0));
-
     const range = getSelection()?.getRangeAt(0);
     if (!range) return;
     range.insertNode(document.createTextNode(text));
@@ -67,22 +89,7 @@ Curiosity killed the cat, satisfaction brought it back.`);
 
   return (
     <>
-      <button
-        style={{
-          margin: "auto",
-          borderRadius: "50%",
-          height: "35px",
-          aspectRatio: "1 / 1",
-          backgroundColor: "red",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: "2em",
-          lineHeight: "0",
-          color: "white",
-        }}
-        onClick={() => dialogRef.current?.showModal()}
-      >
+      <button className="btn-new-post" onClick={() => dialogRef.current?.showModal()}>
         +
       </button>
 
@@ -93,15 +100,30 @@ Curiosity killed the cat, satisfaction brought it back.`);
         </button>
         <h2>NewPost</h2>
         <h3
+          className="h3-post-name"
           contentEditable
           suppressContentEditableWarning
-          onBlur={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
-          style={{ color: `${title ? "" : "#ddd"}` }}
+          // onBlur={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
+          onInput={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
+          style={{ color: `${title === defaultTitle ? "#ddd" : ""}` }}
         >
-          {title ? title : "Post Title"}
+          {title == defaultTitle ? defaultTitle : null}
         </h3>
-        <small>tags:</small>
-        <div contentEditable suppressContentEditableWarning onBlur={calculateTags} />
+        <div style={{ display: "flex", gap: "10px", margin: "20px 0" }}>
+          <div style={{ flex: "1", borderBottom: "1px solid #ddd" }}>
+            <small>tags:</small>
+            <div contentEditable suppressContentEditableWarning onBlur={calculateTags} />
+          </div>
+          <div>
+            <small>control:</small>
+            <div>
+              <button>Bold</button>
+              <button>Italic</button>
+              <button>Code</button>
+              <button>Blockquote</button>
+            </div>
+          </div>
+        </div>
         <div className="new-post-body">
           <pre
             ref={preRef}
@@ -110,9 +132,10 @@ Curiosity killed the cat, satisfaction brought it back.`);
             suppressContentEditableWarning
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
-            onBlur={(e) => setContent(e.target.innerText || "")}
+            // onBlur={(e) => setContent(e.target.innerText || "")}
+            onInput={(e) => setContent((e.target as HTMLPreElement).innerText || "")}
           >
-            {content}
+            {content === "" ? null : "placeholder text"}
           </pre>
           <div className="new-post-section">{content}</div>
         </div>

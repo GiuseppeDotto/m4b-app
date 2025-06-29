@@ -10,7 +10,7 @@ export default function PostTable() {
   return (
     <>
       <h2>POST ADMIN TABLE</h2>
-      <table>
+      <table style={{ width: "100%" }}>
         <thead>
           <tr>
             {header.map((h) => (

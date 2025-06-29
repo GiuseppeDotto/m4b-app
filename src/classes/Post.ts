@@ -44,11 +44,13 @@ export class Post implements IPost {
 
   async addToDB() {
     await setDoc(doc(db, "posts", this.slug), { ...this });
+    return this;
   }
 
   async addComment(commentData: IComment) {
     const newCommentDoc = await addDoc(collection(db, "posts", this.slug, "comments"), commentData);
     const comment = new Comment(commentData, newCommentDoc.id);
     this.comments.push(comment);
+    return this.comments;
   }
 }
