@@ -1,9 +1,10 @@
-import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent } from "react";
+import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent, InputEvent } from "react";
 import "./NewPostDialog.css";
 import { Post } from "../classes/Post";
 
 export default function NewPostDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState<string>("");
@@ -78,6 +79,8 @@ export default function NewPostDialog() {
   const resetAndClose = () => {
     setTitle("");
     setContent("");
+    titleRef.current ? (titleRef.current.textContent = "") : null;
+    preRef.current ? (preRef.current.textContent = "") : null;
     dialogRef.current?.close();
   };
 
@@ -93,32 +96,33 @@ export default function NewPostDialog() {
           CLOSE
         </button>
         <h2>NewPost</h2>
-        <input
+        {/* <input
           type="text"
+          ref={titleRef}
           className="input-title"
           placeholder="Post Title"
           content={title}
           onChange={(e) => setTitle(e.target.value)}
-        />
+        /> */}
         <div style={{ position: "relative" }}>
           <h3
-            className="h3-post-name"
+            ref={titleRef}
             contentEditable
             suppressContentEditableWarning
-            onInput={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
-          ></h3>
-          {title ? null : (
-            <h3 style={{ position: "absolute", top: 0, margin: 0, color: "#ddd" }}>Post Title</h3>
-          )}
+            onInput={(e) => {
+              setTitle((e.target as HTMLDivElement).textContent || "");
+            }}
+          />
+          {title ? null : <h3 className="placeholder">Post Title</h3>}
         </div>
-        <div style={{ display: "flex", gap: "10px", margin: "20px 0" }}>
-          <div style={{ flex: "1", borderBottom: "1px solid #ddd" }}>
+        <div className="div-controller">
+          <div>
             <small>tags:</small>
             <div contentEditable suppressContentEditableWarning onBlur={calculateTags} />
           </div>
           <div>
             <small>control:</small>
-            <div>
+            <div style={{ flexDirection: "row" }}>
               <button>Bold</button>
               <button>Italic</button>
               <button>Code</button>
