@@ -1,0 +1,35 @@
+.two-names-toggle {
+  display: flex;
+  outline: 1px solid #ddd;
+  width: fit-content;
+  position: relative;
+  border-radius: 5px;
+  gap: 4px;
+}
+
+.two-names-toggle > .toggle-selector {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.two-names-toggle-fill {
+  border-radius: 5px;
+  z-index: -1;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  background-color: #eee;
+  transition: left 250ms ease-in-out;
+}
+.two-names-toggle-fill.left {
+  left: 0;
+}
+.two-names-toggle-fill.right {
+  left: calc(100% - 50%);
+}

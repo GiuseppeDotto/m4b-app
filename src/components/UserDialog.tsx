@@ -112,7 +112,13 @@ export default function UserDialog({ opened, onCLose }: Props) {
           }}
         />
         <hr />
-        <button style={{ width: "100%" }} onClick={() => signOut(auth)}>
+        <button
+          style={{ width: "100%" }}
+          onClick={async () => {
+            await signOut(auth);
+            location.reload();
+          }}
+        >
           SING-OUT
         </button>
       </div>

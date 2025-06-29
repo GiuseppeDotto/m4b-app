@@ -1,0 +1,47 @@
+.blog-search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+/* TAG LIST */
+.tag-list > div {
+  display: flex;
+  gap: 5px;
+}
+.tag-list > div > .tag {
+  outline: 1px solid #ddd;
+  color: #ddd;
+  border-radius: 5px;
+  padding: 2px 4px;
+  cursor: pointer;
+  transition: outline 250ms ease-in-out, color 250ms ease-in-out;
+}
+.tag-list > div > .tag:hover {
+  outline: 1px solid #bbb;
+  color: #bbb;
+}
+.tag-list > div > .tag.active {
+  outline: 1px solid #333;
+  color: #333;
+}
+
+/* search INPUT */
+.search-div {
+  flex: 1;
+  flex-basis: 500px;
+}
+.search-div > input {
+  flex: 1;
+  padding: 2px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ddd;
+  margin-top: 4px;
+  width: calc(100% - 4px);
+}
+
+/* DISPLAY MODE */
+.display-mode {
+  margin-left: auto;
+}
