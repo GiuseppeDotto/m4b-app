@@ -27,11 +27,13 @@ function App() {
     const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
       setPostList((currentPostList) => {
         let tempPostList = [...currentPostList];
+        let allSlugs = tempPostList.map((x) => x.slug);
 
         snapshot.docChanges().map((change) => {
           const postData = change.doc.data() as Post;
 
           if (change.type === "added") {
+            if (allSlugs.includes(postData.slug)) return;
             tempPostList = [...tempPostList, new Post(postData)];
           } else if (change.type === "modified") {
             tempPostList = tempPostList.map((x) => (x.slug === postData.slug ? postData : x));

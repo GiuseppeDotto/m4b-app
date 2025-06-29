@@ -5,9 +5,12 @@ import { PostsContext, UserContext } from "../App";
 import PostTable from "./PostTable";
 
 export default function Blog() {
-  const tagList = ["python", "pym4b", "dynamo"];
   const user = useContext(UserContext);
   const postList = useContext(PostsContext);
+  const tagList = postList.reduce((acc: string[], curr) => {
+    curr.tags.map((tag) => (acc.includes(tag) || !tag ? null : acc.push(tag)));
+    return acc;
+  }, []);
 
   return (
     <>
