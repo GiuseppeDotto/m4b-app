@@ -1,4 +1,4 @@
-import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent, InputEvent } from "react";
+import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent } from "react";
 import "./NewPostDialog.css";
 import { Post } from "../classes/Post";
 
@@ -14,7 +14,9 @@ export default function NewPostDialog() {
     const selection = window.getSelection();
     if (!selection) return;
     const range = selection.getRangeAt(0);
-    console.log(range, range.toString(), selection.toString());
+    console.log(selection, selection.toString());
+
+    if (!selection.toString()) return;
 
     const newText = `${wrapper}${selection.toString().trim()}${wrapper}`;
     const newTextNode = document.createTextNode(newText);
@@ -96,14 +98,6 @@ export default function NewPostDialog() {
           CLOSE
         </button>
         <h2>NewPost</h2>
-        {/* <input
-          type="text"
-          ref={titleRef}
-          className="input-title"
-          placeholder="Post Title"
-          content={title}
-          onChange={(e) => setTitle(e.target.value)}
-        /> */}
         <div style={{ position: "relative" }}>
           <h3
             ref={titleRef}
@@ -123,10 +117,10 @@ export default function NewPostDialog() {
           <div>
             <small>control:</small>
             <div style={{ flexDirection: "row" }}>
-              <button>Bold</button>
-              <button>Italic</button>
-              <button>Code</button>
-              <button>Blockquote</button>
+              <button onClick={() => wrapSelection("**")}>Bold</button>
+              <button onClick={() => wrapSelection("_")}>Italic</button>
+              <button onClick={() => wrapSelection("`")}>Code</button>
+              <button onClick={() => alert("still WIP")}>Blockquote</button>
             </div>
           </div>
         </div>
@@ -134,6 +128,7 @@ export default function NewPostDialog() {
           <pre
             ref={preRef}
             className="new-post-section"
+            style={{ userSelect: "text" }}
             contentEditable
             suppressContentEditableWarning
             onKeyDown={handleKeyDown}
