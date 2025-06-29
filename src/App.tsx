@@ -4,21 +4,45 @@ import Home from "./components/Home";
 import Header from "./components/Header";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
-import { auth } from "./config/firebase";
+import { auth, db } from "./config/firebase";
 import Blog from "./components/Blog";
 import { Post } from "./classes/Post";
-import { samplePostList } from "./classes/samplePosts";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export const UserContext = createContext<User | null>(null);
 export const PostsContext = createContext<Post[]>([]);
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [postList, _setPostList] = useState<Post[]>(samplePostList);
+  const [postList, setPostList] = useState<Post[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
       fbUser?.emailVerified ? setUser(fbUser) : signOut(auth);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
+      setPostList((currentPostList) => {
+        let tempPostList = [...currentPostList];
+
+        snapshot.docChanges().map((change) => {
+          const postData = change.doc.data() as Post;
+          console.log(change, postData);
+
+          if (change.type === "added") {
+            tempPostList = [...tempPostList, new Post(postData)];
+          } else if (change.type === "modified") {
+            tempPostList = tempPostList.map((x) => (x.slug === postData.slug ? postData : x));
+          } else {
+            tempPostList = tempPostList.filter((x) => x.slug !== postData.slug);
+          }
+        });
+
+        return tempPostList;
+      });
     });
     return () => unsubscribe();
   }, []);

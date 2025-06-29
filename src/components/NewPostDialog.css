@@ -66,6 +66,7 @@
   margin: 0;
   padding: 0;
   color: #ddd;
+  z-index: -1;
 }
 
 .div-controller {
