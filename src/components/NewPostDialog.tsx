@@ -1,18 +1,12 @@
-import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent, createContext } from "react";
+import { useRef, useState, FocusEvent, KeyboardEvent, ClipboardEvent } from "react";
 import "./NewPostDialog.css";
 import { Post } from "../classes/Post";
 
 export default function NewPostDialog() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const preRef = useRef<HTMLPreElement>(null);
-  const defaultTitle = "Post Title";
-  const [title, setTitle] = useState(defaultTitle);
-  const [content, setContent] =
-    useState<string>(`Lorem ipsum dolor sit amet consectetur adipisicing elit.
-## the issue
-## how to
-## Curiosity
-Curiosity killed the cat, satisfaction brought it back.`);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
   const wrapSelection = (wrapper: string) => {
@@ -99,16 +93,24 @@ Curiosity killed the cat, satisfaction brought it back.`);
           CLOSE
         </button>
         <h2>NewPost</h2>
-        <h3
-          className="h3-post-name"
-          contentEditable
-          suppressContentEditableWarning
-          // onBlur={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
-          onInput={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
-          style={{ color: `${title === defaultTitle ? "#ddd" : ""}` }}
-        >
-          {title == defaultTitle ? defaultTitle : null}
-        </h3>
+        <input
+          type="text"
+          className="input-title"
+          placeholder="Post Title"
+          content={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <div style={{ position: "relative" }}>
+          <h3
+            className="h3-post-name"
+            contentEditable
+            suppressContentEditableWarning
+            onInput={(e) => setTitle((e.target as HTMLHeadingElement).textContent || "")}
+          ></h3>
+          {title ? null : (
+            <h3 style={{ position: "absolute", top: 0, margin: 0, color: "#ddd" }}>Post Title</h3>
+          )}
+        </div>
         <div style={{ display: "flex", gap: "10px", margin: "20px 0" }}>
           <div style={{ flex: "1", borderBottom: "1px solid #ddd" }}>
             <small>tags:</small>
@@ -134,9 +136,7 @@ Curiosity killed the cat, satisfaction brought it back.`);
             onPaste={handlePaste}
             // onBlur={(e) => setContent(e.target.innerText || "")}
             onInput={(e) => setContent((e.target as HTMLPreElement).innerText || "")}
-          >
-            {content === "" ? null : "placeholder text"}
-          </pre>
+          />
           <div className="new-post-section">{content}</div>
         </div>
         <div className="button-control">
