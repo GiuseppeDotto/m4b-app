@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import BlogSearchBar from "./BlogSearchBar";
 import NewPostDialog from "./NewPostDialog";
 import { PostsContext, UserContext } from "../App";
@@ -8,10 +8,15 @@ import PostCard from "./PostCard";
 export default function Blog() {
   const user = useContext(UserContext);
   const postList = useContext(PostsContext);
+  const [visiblePosts, setVisiblePosts] = useState([...postList]);
   const tagList = postList.reduce((acc: string[], curr) => {
     curr.tags.map((tag) => (acc.includes(tag) || !tag ? null : acc.push(tag)));
     return acc;
   }, []);
+
+  const updatePostVisible = (t: string) => {
+    setVisiblePosts(postList.filter((p) => p.title.toLowerCase().includes(t.toLowerCase())));
+  };
 
   return (
     <>
@@ -21,7 +26,11 @@ export default function Blog() {
         below to quickly find one specific.
       </p>
       <h2>Posts</h2>
-      <BlogSearchBar tagList={tagList} displayModes={["grid", "table"]} />
+      <BlogSearchBar
+        tagList={tagList}
+        displayModes={["grid", "table"]}
+        onSearching={updatePostVisible}
+      />
 
       <div
         style={{
@@ -31,7 +40,7 @@ export default function Blog() {
           gap: "10px",
         }}
       >
-        {postList.map((post) => {
+        {visiblePosts.map((post) => {
           return <PostCard post={post} key={post.slug} />;
         })}
       </div>
