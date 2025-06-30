@@ -6,6 +6,7 @@ export interface IPost {
   title: string;
   content: string;
   tags: string[];
+  description?: string;
   createdAt?: Date;
   slug?: string;
   votes?: number;
@@ -18,6 +19,7 @@ export class Post implements IPost {
   content: string;
   tags: string[];
 
+  description: string;
   createdAt: Date;
   slug: string;
   votes: number;
@@ -28,6 +30,7 @@ export class Post implements IPost {
     this.title = data.title;
     this.content = data.content;
     this.tags = data.tags;
+    this.description = data.description || "---";
     if (data.createdAt instanceof Timestamp) {
       this.createdAt = data.createdAt.toDate();
     } else if (data.createdAt instanceof Date) {
