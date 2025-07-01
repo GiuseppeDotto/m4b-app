@@ -1,0 +1,29 @@
+.post-card-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  outline: 1px solid #ddd;
+  * {
+    margin: 0;
+  }
+  transition: translate 250ms ease-in-out, box-shadow 250ms ease-in-out;
+}
+
+.post-card-row:hover {
+  translate: 0 -3px;
+  box-shadow: 0 3px 10px #ddd;
+}
+
+.post-card-row > div:nth-child(1) {
+  height: 50px;
+  outline: 1px solid red;
+  aspect-ratio: 1/1;
+  background-color: green;
+}
+.post-card-row > div:nth-child(2) {
+  flex: 1;
+}
+.post-card-row > div:nth-child(3) {
+  display: flex;
+  flex-direction: column;
+}
