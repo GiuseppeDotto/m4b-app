@@ -8,6 +8,7 @@ import { auth, db } from "./config/firebase";
 import Blog from "./components/Blog";
 import { Post } from "./classes/Post";
 import { collection, onSnapshot } from "firebase/firestore";
+import PostPage from "./components/PostPage";
 
 export const UserContext = createContext<User | null>(null);
 export const PostsContext = createContext<Post[]>([]);
@@ -57,6 +58,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/post/:slug" element={<PostPage />} />
             </Routes>
           </main>
         </PostsContext.Provider>
