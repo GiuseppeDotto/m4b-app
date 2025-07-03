@@ -1,18 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import BlogSearchBar from "./BlogSearchBar";
 import NewPostDialog from "./NewPostDialog";
-import { PostsContext, UserContext } from "../App";
-import PostTable from "./PostTable";
+import { BlogContext, UserContext } from "../App";
 import PostCard from "./PostCard";
 import { Post } from "../classes/Post";
 import PostCardRow from "./PostCardRow";
 
 export default function Blog() {
   const user = useContext(UserContext);
-  const postList = useContext(PostsContext);
-  const [visiblePosts, setVisiblePosts] = useState<Post[]>([...postList]);
-  useEffect(() => setVisiblePosts([...postList]), [postList]); // CHECK IF REALLY USEFUL
-  const tagList = postList.reduce((acc: string[], curr) => {
+  const { posts, tags } = useContext(BlogContext);
+  const [visiblePosts, setVisiblePosts] = useState<Post[]>([...posts]);
+  // useEffect(() => setVisiblePosts([...posts]), [posts]); // CHECK IF REALLY USEFUL
+
+  const tagList = posts.reduce((acc: string[], curr) => {
     curr.tags.map((tag) => (acc.includes(tag) || !tag ? null : acc.push(tag)));
     return acc;
   }, []);
@@ -20,7 +20,7 @@ export default function Blog() {
   const [mode, setMode] = useState(displayModes[0]);
 
   const updatePostVisible = (t: string) => {
-    setVisiblePosts(postList.filter((p) => p.title.toLowerCase().includes(t.toLowerCase())));
+    setVisiblePosts(posts.filter((p) => p.title.toLowerCase().includes(t.toLowerCase())));
   };
 
   return (
@@ -46,7 +46,7 @@ export default function Blog() {
           style={{
             margin: "1rem 0",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
             gap: "10px",
           }}
         >

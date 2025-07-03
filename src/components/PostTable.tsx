@@ -1,12 +1,13 @@
 import { useContext } from "react";
-import { PostsContext, UserContext } from "../App";
+import { BlogContext, UserContext } from "../App";
 import { Post } from "../classes/Post";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../config/firebase";
 
 export default function PostTable() {
   const user = useContext(UserContext);
-  const postList = useContext(PostsContext);
+  const { posts, tags } = useContext(BlogContext);
+
   const header = ["title", "createdAt", "votes", "views", "comments", "tags"];
   return (
     <>
@@ -20,16 +21,28 @@ export default function PostTable() {
           </tr>
         </thead>
         <tbody>
-          {postList.map((post) => {
+          {posts.map((post) => {
             return (
               <tr key={post.slug}>
                 {header.map((k, i) => {
                   let value = post[k as keyof Post];
-                  value = value instanceof Date ? value.toLocaleDateString() : String(value);
-                  return <td key={value + i}>{value}</td>;
+                  return (
+                    <td key={String(value) + i}>
+                      {k == "createdAt" ? (
+                        value.toLocaleString()
+                      ) : Array.isArray(value) && k == "tags" ? (
+                        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
+                          {value.map((t) => tags.find((x) => x.tag == t)?.div)}
+                        </div>
+                      ) : Array.isArray(value) ? (
+                        value.length
+                      ) : (
+                        String(value)
+                      )}
+                    </td>
+                  );
                 })}
 
-                {/* ADMIN ELECTIVE */}
                 {user?.uid == import.meta.env.VITE_ADMIN_UID ? (
                   <td style={{ display: "flex", gap: "5px" }}>
                     <button>EDIT</button>

@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { PostsContext } from "../App";
+import { BlogContext } from "../App";
 import { useParams } from "react-router-dom";
 import MDXRenderer from "./MDXRenderer";
 
 export default function PostPage() {
-  const postList = useContext(PostsContext);
+  const { posts, tags } = useContext(BlogContext);
   let params = useParams();
-  const post = postList.find((p) => p.slug === params.slug);
+  const post = posts.find((p) => p.slug === params.slug);
   if (!post) return <h1>Error 404: post missing</h1>;
 
   return (
@@ -21,9 +21,7 @@ export default function PostPage() {
       >
         <div>
           <small>tags:</small>
-          {post.tags.map((tag) => (
-            <div className="tag-div">{tag}</div>
-          ))}
+          {post.tags.map((tag) => tags.find((x) => x.tag === tag)?.div)}
         </div>
         <div>
           <small>ceratedAt:</small>

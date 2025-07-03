@@ -9,13 +9,21 @@ import Blog from "./components/Blog";
 import { Post } from "./classes/Post";
 import { collection, onSnapshot } from "firebase/firestore";
 import PostPage from "./components/PostPage";
+import { ITag, calculateTags } from "./classes/Tags";
 
 export const UserContext = createContext<User | null>(null);
-export const PostsContext = createContext<Post[]>([]);
+
+interface IBlogContext {
+  posts: Post[];
+  tags: ITag[];
+}
+
+export const BlogContext = createContext<IBlogContext>({ posts: [], tags: [] });
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [postList, setPostList] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [tags, setTags] = useState<ITag[]>([]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (fbUser) => {
@@ -26,24 +34,25 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "posts"), (snapshot) => {
-      setPostList((currentPostList) => {
-        let tempPostList = [...currentPostList];
-        let allSlugs = tempPostList.map((x) => x.slug);
+      setPosts((currentPostList) => {
+        let currentPosts = [...currentPostList];
+        let allSlugs = currentPosts.map((x) => x.slug);
 
         snapshot.docChanges().map((change) => {
           const postData = change.doc.data() as Post;
 
           if (change.type === "added") {
             if (allSlugs.includes(postData.slug)) return;
-            tempPostList = [...tempPostList, new Post(postData)];
+            currentPosts = [...currentPosts, new Post(postData)];
           } else if (change.type === "modified") {
-            tempPostList = tempPostList.map((x) => (x.slug === postData.slug ? postData : x));
+            currentPosts = currentPosts.map((x) => (x.slug === postData.slug ? postData : x));
           } else {
-            tempPostList = tempPostList.filter((x) => x.slug !== postData.slug);
+            currentPosts = currentPosts.filter((x) => x.slug !== postData.slug);
           }
         });
 
-        return tempPostList;
+        setTags((currentTags) => calculateTags(currentPosts, currentTags));
+        return currentPosts;
       });
     });
     return () => unsubscribe();
@@ -52,7 +61,7 @@ function App() {
   return (
     <>
       <UserContext.Provider value={user}>
-        <PostsContext.Provider value={postList}>
+        <BlogContext.Provider value={{ posts, tags }}>
           <Header />
           <main style={{ width: "min(1000px, 90%)", margin: "0 auto" }}>
             <Routes>
@@ -61,7 +70,7 @@ function App() {
               <Route path="/post/:slug" element={<PostPage />} />
             </Routes>
           </main>
-        </PostsContext.Provider>
+        </BlogContext.Provider>
       </UserContext.Provider>
     </>
   );

@@ -1,16 +1,16 @@
-import { useContext } from "react";
-import ObjectToTable from "./ObjectToTable";
-import { PostsContext } from "../App";
+// import { useContext } from "react";
+// import ObjectToTable from "./ObjectToTable";
+// import { BlogContext } from "../App";
+import PostTable from "./PostTable";
 
 export default function Home() {
-  const postList = useContext(PostsContext);
+  // const { posts } = useContext(BlogContext);
 
   return (
     <>
       <h1>Macro4BIM</h1>
       <h2>blog home page</h2>
-      <h3>post list</h3>
-      <ObjectToTable obj={postList} />
+      <PostTable />
     </>
   );
 }
