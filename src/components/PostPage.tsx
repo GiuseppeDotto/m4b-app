@@ -16,12 +16,13 @@ export default function PostPage() {
           display: "flex",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          marginTop: "75px",
         }}
       >
         <div>
           <small>tags:</small>
-          {post.tags.map((tag) => tags.find((x) => x.tag === tag)?.div)}
+          <div style={{ display: "flex", gap: "5px" }}>
+            {post.tags.map((tag) => tags.find((x) => x.tag === tag)?.div)}
+          </div>
         </div>
         <div>
           <small>ceratedAt:</small>

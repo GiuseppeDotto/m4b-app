@@ -63,7 +63,7 @@ function App() {
       <UserContext.Provider value={user}>
         <BlogContext.Provider value={{ posts, tags }}>
           <Header />
-          <main style={{ width: "min(1000px, 90%)", margin: "0 auto" }}>
+          <main className="m4b-main">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/blog" element={<Blog />} />

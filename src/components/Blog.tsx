@@ -46,7 +46,7 @@ export default function Blog() {
           style={{
             margin: "1rem 0",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
             gap: "10px",
           }}
         >
